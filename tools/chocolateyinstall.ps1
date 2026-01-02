@@ -9,8 +9,8 @@ if ($process) {
 }
 
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$url        = 'https://packages.fluentbit.io/windows/fluent-bit-4.1.0-win32.exe'
-$url64      = 'https://packages.fluentbit.io/windows/fluent-bit-4.1.0-win64.exe'
+$url        = 'https://packages.fluentbit.io/windows/fluent-bit-4.2.2-win32.exe'
+$url64      = 'https://packages.fluentbit.io/windows/fluent-bit-4.2.2-win64.exe'
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
@@ -19,9 +19,9 @@ $packageArgs = @{
   url           = $url
   url64bit      = $url64
   softwareName  = 'fluent-bit*'
-  checksum      = '963D3616FF242EFF30BA4302D50FE552F5C2AE19AECA233C7D5D35B122AEE840'
+  checksum      = 'ED74E308D287F0A84FBCDE32BD3D6CCC74BEC84CB96C9219346ED72BD70E7AE8'
   checksumType  = 'sha256'
-  checksum64    = '7DD9DEF0E07B0B2852DDCF66916AD00CA5133AF6F8DB630801991356A8DEFFE5'
+  checksum64    = '4E95E932AC8F2CC887C1A1D2D8F70AC2C9ACA475EC2CB86399B8D6A7F7F1CB91'
   checksumType64= 'sha256'
   silentArgs    = "/S"
   validExitCodes= @(0, 3010, 1641)
@@ -58,3 +58,4 @@ New-Service $ServiceName -BinaryPathName "`"$ExecutablePath`" -c `"$ConfigPath`"
 Start-Service -Name $ServiceName
 
 Write-Host "Fluent Bit service created successfully." -ForegroundColor Green
+
