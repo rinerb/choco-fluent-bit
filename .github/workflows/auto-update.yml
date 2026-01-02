@@ -27,26 +27,32 @@ jobs:
           
       - name: Check for new Fluent Bit version
         id: check_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
           # Function to get latest version from Fluent Bit packages site
           function Get-LatestFluentBitVersion {
               try {
-                  $response = Invoke-WebRequest -Uri "https://packages.fluentbit.io/windows/" -UseBasicParsing
-                  $content = $response.Content
-                  
-                  # Look for fluent-bit-X.Y.Z-win64.exe pattern
-                  $versionPattern = 'fluent-bit-(\d+\.\d+\.\d+)-win64\.exe'
-                  $versionMatches = [regex]::Matches($content, $versionPattern)
-                  
-                  if ($versionMatches.Count -eq 0) {
-                      Write-Error "No version found in packages site"
-                      return $null
+                  $headers = @{
+                      "Authorization" = "Bearer $($Env:GITHUB_TOKEN)"
+                      "Accept"        = "application/vnd.github+json"
                   }
-                  
-                  # Get all versions and find the latest
-                  $versions = $versionMatches | ForEach-Object { $_.Groups[1].Value } | Sort-Object { [version]$_ } -Descending
-                  return $versions[0]
+
+                  # Use the GitHub releases to get a sorted list of versions from the release tag.
+                  $github_releases = Invoke-WebRequest -Uri "https://api.github.com/repos/fluent/fluent-bit/releases" -Headers $headers -UseBasicParsing
+                  $github_versions = `
+                      ($github_releases.content | ConvertFrom-Json) `
+                      | ForEach-Object { [version]($_.tag_name.trimstart("v")) } `
+                      | Sort-Object -Descending
+
+                  # Get the latest version that has a package at the download URL.
+                  $current_version = $github_versions | Where-Object {
+                      Write-Host "Checking package download URL for $_"
+                      Invoke-WebRequest -Method Head -UseBasicParsing -Uri "https://packages.fluentbit.io/windows/fluent-bit-$_-win64.exe"
+                  } | Select-Object -First 1
+
+                  return $current_version
               }
               catch {
                   Write-Error "Failed to fetch latest version: $_"
