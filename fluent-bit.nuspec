@@ -4,7 +4,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>fluent-bit</id>
-    <version>4.1.0</version>
+    <version>4.2.2</version>
     <packageSourceUrl>https://github.com/sier/choco-fluent-bit</packageSourceUrl>
     <owners>Sier</owners>
     <!-- == SOFTWARE SPECIFIC SECTION == -->
@@ -84,11 +84,12 @@ Fluent Bit was originally created by Eduardo Silva
 and is now sponsored by Chronosphere. As a
 CNCF-hosted project, it is a fully vendor-neutral and community-driven project.
 </description>
-    <releaseNotes>https://fluentbit.io/announcements/v4.1.0/</releaseNotes>
+    <releaseNotes>https://fluentbit.io/announcements/v4.2.2/</releaseNotes>
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->
     <file src="tools\**" target="tools" />
   </files>
 </package>
+
 
